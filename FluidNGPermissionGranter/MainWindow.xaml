@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FluidNGPermissionGranter"
         mc:Ignorable="d"
         Title="Fluid N.G. Permission Granter" Height="409" Width="330" Background="White" ResizeMode="NoResize" WindowStartupLocation="Manual" Closing="Window_Closing">
     <Grid>
@@ -14,10 +13,10 @@
             </Grid.ColumnDefinitions>
             
             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                <Button Name="guideButton" Click="GuideButton_Click" Content="Activate ADB on your device" FontSize="13" Height="28" Margin="3"/>
-                <Button Name="findButton" Click="FindButton_Click" Content="Find your device" FontSize="13" Height="28" Margin="3"/>
-                <Button Name="grantButton" Click="GrantButton_Click" Content="Grant permission" FontSize="13" Height="28" IsEnabled="False" Margin="3"/>
-                <Button Name= "logButton" Click="LogButton_Click" Content="Log info" FontSize="13" Height="28" Margin="3" Background="White" BorderBrush="#FFBBBBBB" Foreground="#FFBBBBBB"/>
+                <Button Click="GuideButton_Click" Content="Activate ADB on your device" FontSize="13" Height="28" Margin="3"/>
+                <Button Click="FindButton_Click" Content="Find your device" FontSize="13" Height="28" Margin="3"/>
+                <Button Name="GrantButton" Click="GrantButton_Click" Content="Grant permission" FontSize="13" Height="28" IsEnabled="False" Margin="3"/>
+                <Button Click="LogButton_Click" Content="Log info" FontSize="13" Height="28" Margin="3" Background="White" BorderBrush="#FFBBBBBB" Foreground="#FFBBBBBB"/>
 
             </StackPanel>
             

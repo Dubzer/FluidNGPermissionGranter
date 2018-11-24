@@ -15,16 +15,13 @@ using SharpAdbClient;
 
 namespace FluidNGPermissionGranter
 {
-    /// <summary>
-    /// Логика взаимодействия для LogWindow.xaml
-    /// </summary>
     public partial class LogWindow : Window
     {
-        public static string richText = ">Log";
+        public static string RichText = ">Log";
         public LogWindow()
         {
             InitializeComponent();
-            console.AppendText(richText);
+            Console.AppendText(RichText);
         }
         /*
         private void TextBox_KeyDown_1(object sender, KeyEventArgs e)
@@ -38,7 +35,7 @@ namespace FluidNGPermissionGranter
         */
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            richText = new TextRange(console.Document.ContentStart, console.Document.ContentEnd).Text;
+            RichText = new TextRange(Console.Document.ContentStart, Console.Document.ContentEnd).Text;
         }
     } 
 }

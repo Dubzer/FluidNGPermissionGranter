@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Windows;
 using SharpAdbClient;
 
@@ -8,8 +7,8 @@ namespace FluidNGPermissionGranter
 {
     public partial class MainWindow : Window
     {
-        private AdbServer server = new AdbServer();
-        private string adbPath;
+        private readonly AdbServer server = new AdbServer();
+        private readonly string adbPath;
         private LogWindow logWindow;
         private ADBGuide adbGuideWindow;
 
@@ -22,7 +21,7 @@ namespace FluidNGPermissionGranter
         // Closing adb server after closing program
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            foreach (Process proc in Process.GetProcessesByName("adb"))
+            foreach (var proc in Process.GetProcessesByName("adb"))
             {
                 proc.Kill();
             }
@@ -48,13 +47,13 @@ namespace FluidNGPermissionGranter
 
         private void FindButton_Click(object sender, RoutedEventArgs e)
         {
-            StartADB();
+            StartAdb();
             FindDevice();
         }
 
         private void GrantButton_Click(object sender, RoutedEventArgs e)
         {
-            SendToADB("pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS");
+            SendToAdb("pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS");
         }
         private void LogButton_Click(object sender, RoutedEventArgs e)
         {
@@ -73,18 +72,18 @@ namespace FluidNGPermissionGranter
             }
         }
         #endregion
-        private void StartADB()
+        private void StartAdb()
         {
             // Trying to start ADB server and find device 
             try
             {
-                var result = server.StartServer(adbPath, restartServerIfNewer: false);
-                LogWindow.richText += "\nADB server started successful: " + result;
+                var result = server.StartServer(adbPath, false);
+                LogWindow.RichText += "\nADB server started successful: " + result;
             }
             catch
             {
                 MessageBox.Show("Can't start ADB server. Please check Log and ask developer for it");
-                LogWindow.richText += "Can't start ADB server";
+                LogWindow.RichText += "Can't start ADB server";
             }
         }
 
@@ -97,7 +96,7 @@ namespace FluidNGPermissionGranter
                 foreach (var device in devices)
                 {
                     MessageBox.Show("The device has been found. Your device is: " + device.Name, "Message");
-                    grantButton.IsEnabled = true;
+                    GrantButton.IsEnabled = true;
                 }
             }
             else
@@ -106,19 +105,7 @@ namespace FluidNGPermissionGranter
             }
         }
 
-        private void StartDeviceMonitor()
-        {
-            var monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
-            monitor.DeviceConnected += OnDeviceConnected;
-            monitor.Start();
-        }
-
-        private void OnDeviceConnected(object sender, DeviceDataEventArgs e)
-        {
-            MessageBox.Show("The device has been found. Your device is: " + e.Device.Name);
-        }
-
-        public static string SendToADB(string command)
+        private static string SendToAdb(string command)
         {
             try
             {
@@ -130,8 +117,8 @@ namespace FluidNGPermissionGranter
             }
             catch
             {
-                MessageBox.Show("Connection lost. Check your USB cabel and try again.");
-                return "Connection lost. Check your USB cabel and try again";
+                MessageBox.Show("Connection lost. Check your USB cable and try again.");
+                return "Connection lost. Check your USB cable and try again";
             }
         }
     }

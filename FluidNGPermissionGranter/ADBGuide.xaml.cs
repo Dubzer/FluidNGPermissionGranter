@@ -15,10 +15,7 @@ using System.Windows.Shapes;
 
 namespace FluidNGPermissionGranter
 {
-    /// <summary>
-    /// Логика взаимодействия для ADBGuide.xaml
-    /// </summary>
-    public partial class ADBGuide : Window
+    public partial class ADBGuide
     {
         public ADBGuide()
         {
