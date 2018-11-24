@@ -91,18 +91,18 @@ namespace FluidNGPermissionGranter
         //  Trying to find device and show message about it 
         private void FindDevice()
         {
-            try
+            var devices = AdbClient.Instance.GetDevices();
+            if(devices.Count != 0)
             {
-                var devices = AdbClient.Instance.GetDevices();
                 foreach (var device in devices)
                 {
                     MessageBox.Show("The device has been found. Your device is: " + device.Name, "Message");
                     grantButton.IsEnabled = true;
                 }
             }
-            catch
+            else
             {
-                MessageBox.Show("Something go wrong. Please check your connection with device.", "Message");
+                MessageBox.Show("Can't find device. Please check your connection", "Message");
             }
         }
 
@@ -120,11 +120,19 @@ namespace FluidNGPermissionGranter
 
         public static string SendToADB(string command)
         {
-            var device = AdbClient.Instance.GetDevices().First();
-            var receiver = new ConsoleOutputReceiver();
-            AdbClient.Instance.ExecuteRemoteCommand(command, device, receiver);
-            MessageBox.Show("Done! Restart application to see the changes", "Congratulations");
-            return receiver.ToString();
+            try
+            {
+                var device = AdbClient.Instance.GetDevices().First();
+                var receiver = new ConsoleOutputReceiver();
+                AdbClient.Instance.ExecuteRemoteCommand(command, device, receiver);
+                MessageBox.Show("Done! Restart application to see the changes", "Congratulations");
+                return receiver.ToString();
+            }
+            catch
+            {
+                MessageBox.Show("Connection lost. Check your USB cabel and try again.");
+                return "Connection lost. Check your USB cabel and try again";
+            }
         }
     }
 }
