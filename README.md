@@ -1,3 +1,2 @@
 # FluidNGPermissionGranter
-Just a app that I made in my free time.
-![alt text](https://i.imgur.com/YxPPyXA.png)
+![alt text](https://i.imgur.com/IQA9dnh.png)
