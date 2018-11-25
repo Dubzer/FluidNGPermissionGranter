@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
+﻿using System.Windows;
 using System.Diagnostics;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace FluidNGPermissionGranter
 {
@@ -39,7 +27,7 @@ namespace FluidNGPermissionGranter
 
         private void XiaomiButton_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://www.syncios.com/android/how-to-debug-huawei-honor-9.html");
+            Process.Start("https://tgraph.io/Enable-developer-options-and-debugging-11-25");
         }
 
         private void OtherButton_Click(object sender, RoutedEventArgs e)

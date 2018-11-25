@@ -18,11 +18,13 @@ namespace FluidNGPermissionGranter
     public partial class LogWindow : Window
     {
         public static string RichText = ">Log";
+
         public LogWindow()
         {
             InitializeComponent();
             Console.AppendText(RichText);
         }
+
         /*
         private void TextBox_KeyDown_1(object sender, KeyEventArgs e)
         {
@@ -37,5 +39,5 @@ namespace FluidNGPermissionGranter
         {
             RichText = new TextRange(Console.Document.ContentStart, Console.Document.ContentEnd).Text;
         }
-    } 
+    }
 }
