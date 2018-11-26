@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using SharpAdbClient;
 
@@ -9,7 +8,7 @@ namespace FluidNGPermissionGranter
     {
         private readonly AdbServer server = new AdbServer();
         private readonly string adbPath;
-        private LogWindow logWindow;
+        //private LogWindow logWindow;
         private ADBGuide adbGuideWindow;
 
         public MainWindow()
@@ -21,7 +20,7 @@ namespace FluidNGPermissionGranter
         // Closing adb server after closing program
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            foreach (var proc in Process.GetProcessesByName("adb"))
+            foreach (var proc in System.Diagnostics.Process.GetProcessesByName("adb"))
             {
                 proc.Kill();
             }
@@ -53,7 +52,10 @@ namespace FluidNGPermissionGranter
         private void GrantButton_Click(object sender, RoutedEventArgs e)
         {
             SendToAdb("pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS");
+            MessageBox.Show("Done! Restart application to see the changes", "Congratulations");
+            CloseButton.IsEnabled = true;
         }
+        /*
         private void LogButton_Click(object sender, RoutedEventArgs e)
         {
             if (logWindow == null)
@@ -63,12 +65,16 @@ namespace FluidNGPermissionGranter
             }
             else
             {
-                //  Bad code that I have to change later
                 logWindow.Close();
                 logWindow = new LogWindow();
                 logWindow.Show();
-                logWindow.Focus();
             }
+        }
+        */
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            SendToAdb("am force-stop com.fb.fluid");
+            SendToAdb("am start -n com.fb.fluid/com.fb.fluid.ActivityMain");
         }
         #endregion
         private void StartAdb()
@@ -111,7 +117,6 @@ namespace FluidNGPermissionGranter
                 var device = AdbClient.Instance.GetDevices().First();
                 var receiver = new ConsoleOutputReceiver();
                 AdbClient.Instance.ExecuteRemoteCommand(command, device, receiver);
-                MessageBox.Show("Done! Restart application to see the changes", "Congratulations");
                 return receiver.ToString();
             }
             catch

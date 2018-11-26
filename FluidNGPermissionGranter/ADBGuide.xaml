@@ -14,11 +14,11 @@
 
             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                 <Label Content="Choose your device:" HorizontalContentAlignment="Center" FontSize="16"/>
-                <Button Content="Google Pixel" FontSize="13" Height="28" Margin="3" Click="PixelButton_Click"/>
+                <Button Content="Google Pixel (Oreo &amp; Pie)" FontSize="13" Height="28" Margin="3" Click="PixelButton_Click"/>
                 <Button Content="Samsung" FontSize="13" Height="28" Margin="3" Click="SamsungButton_Click"/>
                 <Button Content="Huawei" FontSize="13" Height="28" Margin="3" Click="HuaweiButton_Click"/>
                 <Button Content="Xiaomi" FontSize="13" Height="28" Margin="3" Click="XiaomiButton_Click"/>
-                <Button Content="Other" FontSize="13" Height="28" Margin="3" Click="OtherButton_Click"/>
+                <Button Content="Other (Nougat and older)" FontSize="13" Height="28" Margin="3" Click="OtherButton_Click"/>
             </StackPanel>
 
         </Grid>

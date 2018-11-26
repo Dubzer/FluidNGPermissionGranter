@@ -16,8 +16,8 @@
                 <Button Click="GuideButton_Click" Content="Activate ADB on your device" FontSize="13" Height="28" Margin="3"/>
                 <Button Click="FindButton_Click" Content="Find your device" FontSize="13" Height="28" Margin="3"/>
                 <Button Name="GrantButton" Click="GrantButton_Click" Content="Grant permission" FontSize="13" Height="28" IsEnabled="False" Margin="3"/>
-                <Button Click="LogButton_Click" Content="Log info" FontSize="13" Height="28" Margin="3" Background="White" BorderBrush="#FFBBBBBB" Foreground="#FFBBBBBB"/>
-
+                <!--                 <Button Click="LogButton_Click" Content="Log info" FontSize="13" Height="28" Margin="3" Background="White" BorderBrush="#FFBBBBBB" Foreground="#FFBBBBBB"/> -->
+                <Button Name="CloseButton" Content="Restart Fluid N.G." FontSize="13" Height="28" IsEnabled="False" Margin="3" Click="CloseButton_Click"/>
             </StackPanel>
             
         </Grid> 
