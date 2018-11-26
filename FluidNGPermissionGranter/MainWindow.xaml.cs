@@ -25,23 +25,22 @@ namespace FluidNGPermissionGranter
             {
                 proc.Kill();
             }
+            Application.Current.Shutdown();
         }
         #region Button actions 
 
         private void GuideButton_Click(object sender, RoutedEventArgs e)
         {
-            if (adbGuideWindow == null)
+            if(adbGuideWindow == null)
             {
                 adbGuideWindow = new ADBGuide();
                 adbGuideWindow.Show();
             }
             else
             {
-                //  Bad code that I have to change later
                 adbGuideWindow.Close();
                 adbGuideWindow = new ADBGuide();
                 adbGuideWindow.Show();
-                adbGuideWindow.Focus();
             }
         }
 
