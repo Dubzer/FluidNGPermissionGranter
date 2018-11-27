@@ -13,11 +13,11 @@
             </Grid.ColumnDefinitions>
             
             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                <Button Click="GuideButton_Click" Content="Activate ADB on your device" FontSize="13" Height="28" Margin="3"/>
-                <Button Click="FindButton_Click" Content="Find your device" FontSize="13" Height="28" Margin="3"/>
-                <Button Name="GrantButton" Click="GrantButton_Click" Content="Grant permission" FontSize="13" Height="28" IsEnabled="False" Margin="3"/>
+                <Button Click="GuideButton_Click" Content="1. Activate ADB on your device" FontSize="13" Height="28" Margin="3"/>
+                <Button Click="FindButton_Click" Content="2. Find your device" FontSize="13" Height="28" Margin="3"/>
+                <Button Name="GrantButton" Click="GrantButton_Click" Content="3. Grant permission" FontSize="13" Height="28" IsEnabled="False" Margin="3"/>
                 <!--                 <Button Click="LogButton_Click" Content="Log info" FontSize="13" Height="28" Margin="3" Background="White" BorderBrush="#FFBBBBBB" Foreground="#FFBBBBBB"/> -->
-                <Button Name="CloseButton" Content="Restart Fluid N.G." FontSize="13" Height="28" IsEnabled="False" Margin="3" Click="CloseButton_Click"/>
+                <Button Name="CloseButton" Content="4. Restart Fluid N.G." FontSize="13" Height="28" IsEnabled="False" Margin="3" Click="CloseButton_Click"/>
             </StackPanel>
             
         </Grid> 
