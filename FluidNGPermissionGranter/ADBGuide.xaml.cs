@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace FluidNGPermissionGranter
 {
-    public partial class ADBGuide : Window
+    public partial class ADBGuide
     {
         public ADBGuide()
         {

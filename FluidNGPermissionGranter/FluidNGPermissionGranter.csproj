@@ -59,8 +59,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AllowADBWindow.xaml.cs">
+      <DependentUpon>AllowADBWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IconHelper.cs" />
     <Page Include="ADBGuide.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AllowADBWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

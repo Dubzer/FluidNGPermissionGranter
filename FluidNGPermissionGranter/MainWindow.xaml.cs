@@ -5,7 +5,7 @@ using SharpAdbClient;
 
 namespace FluidNGPermissionGranter
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         private readonly AdbServer server = new AdbServer();
         private readonly string adbPath;

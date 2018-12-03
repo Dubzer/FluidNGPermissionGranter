@@ -1,9 +1,8 @@
-﻿using System.Windows; 
-using System.Windows.Documents;
+﻿using System.Windows.Documents;
 
 namespace FluidNGPermissionGranter
 {
-    public partial class LogWindow : Window
+    public partial class LogWindow
     {
         public static string RichText = ">Log";
 
