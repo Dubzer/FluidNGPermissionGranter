@@ -30,17 +30,8 @@ namespace FluidNGPermissionGranter
 
         private void GuideButton_Click(object sender, RoutedEventArgs e)
         {
-            if(adbGuideWindow == null)
-            {
-                adbGuideWindow = new ADBGuide();
-                adbGuideWindow.Show();
-            }
-            else
-            {
-                adbGuideWindow.Close();
-                adbGuideWindow = new ADBGuide();
-                adbGuideWindow.Show();
-            }
+            adbGuideWindow = new ADBGuide { ShowInTaskbar = false, Owner = Application.Current.MainWindow };
+            adbGuideWindow.ShowDialog();
         }
 
         private void FindButton_Click(object sender, RoutedEventArgs e)
@@ -55,22 +46,7 @@ namespace FluidNGPermissionGranter
             MessageBox.Show("Done! Restart application to see the changes", "Congratulations");
             CloseButton.IsEnabled = true;
         }
-        /*
-        private void LogButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (logWindow == null)
-            {
-                logWindow = new LogWindow();
-                logWindow.Show();
-            }
-            else
-            {
-                logWindow.Close();
-                logWindow = new LogWindow();
-                logWindow.Show();
-            }
-        }
-        */
+       
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             SendToAdb("am force-stop com.fb.fluid");
