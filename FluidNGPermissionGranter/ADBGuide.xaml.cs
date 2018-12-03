@@ -1,13 +1,20 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Diagnostics;
 
 namespace FluidNGPermissionGranter
 {
-    public partial class ADBGuide
+    public partial class ADBGuide : Window
     {
         public ADBGuide()
         {
             InitializeComponent();
+        }
+
+        // Removing icon on the top of window 
+        private void Window_SourceInitialized(object sender, EventArgs e)
+        {
+            IconHelper.RemoveIcon(this);
         }
 
         private void PixelButton_Click(object sender, RoutedEventArgs e)
@@ -34,5 +41,6 @@ namespace FluidNGPermissionGranter
         {
             Process.Start("https://tgraph.io/Enable-developer-options-and-debugging-11-24"); 
         }
+
     }
 }

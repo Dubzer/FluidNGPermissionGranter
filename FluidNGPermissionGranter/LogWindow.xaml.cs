@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data; 
+﻿using System.Windows; 
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using SharpAdbClient;
 
 namespace FluidNGPermissionGranter
 {
@@ -25,6 +13,12 @@ namespace FluidNGPermissionGranter
             Console.AppendText(RichText);
         }
 
+        // Removing icon on the top of window 
+        private void Window_SourceInitialized(object sender, System.EventArgs e)
+        {
+            IconHelper.RemoveIcon(this);
+        }
+
         /*
         private void TextBox_KeyDown_1(object sender, KeyEventArgs e)
         {
@@ -35,6 +29,7 @@ namespace FluidNGPermissionGranter
             }
         }
         */
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             RichText = new TextRange(Console.Document.ContentStart, Console.Document.ContentEnd).Text;
