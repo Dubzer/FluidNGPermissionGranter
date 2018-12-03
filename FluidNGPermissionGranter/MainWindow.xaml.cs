@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using SharpAdbClient;
 
@@ -26,6 +27,13 @@ namespace FluidNGPermissionGranter
             }
             Application.Current.Shutdown();
         }
+
+        // Removing icon on the top of window 
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            IconHelper.RemoveIcon(this);
+        }
+
         #region Button actions 
 
         private void GuideButton_Click(object sender, RoutedEventArgs e)
