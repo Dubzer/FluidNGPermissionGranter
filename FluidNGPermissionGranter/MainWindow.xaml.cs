@@ -80,10 +80,12 @@ namespace FluidNGPermissionGranter
         private void FindDevice()
         {
             var devices = AdbClient.Instance.GetDevices();
+
             if(devices.Count != 0)
             {
                 foreach (var device in devices)
                 {
+                    
                     MessageBox.Show("The device has been found. Your device is: " + device.Name, "Message");
                     GrantButton.IsEnabled = true;
                 }

@@ -4,11 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Height="150" Width="270">
+        Height="186.496" Width="270">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="9*"/>
             <RowDefinition Height="32*" />
         </Grid.RowDefinitions>
+        <Label Content="If you have window like that on your device, &#xA;than press OK" HorizontalContentAlignment="Center" FontSize="9" />
+        <Image Grid.Row="1" Source="Resources/allow.png"/>
     </Grid>
 </Window>
