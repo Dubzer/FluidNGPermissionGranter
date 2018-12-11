@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Windows;
 using SharpAdbClient;
 
@@ -21,9 +22,16 @@ namespace FluidNGPermissionGranter
         // Closing adb server after closing program
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            foreach (var proc in System.Diagnostics.Process.GetProcessesByName("adb"))
+            try
             {
-                proc.Kill();
+                foreach (var proc in System.Diagnostics.Process.GetProcessesByName("adb"))
+                {
+                    proc.Kill();
+                }
+            }
+            catch
+            {
+                Application.Current.Shutdown();
             }
             Application.Current.Shutdown();
         }
@@ -45,7 +53,7 @@ namespace FluidNGPermissionGranter
         private void FindButton_Click(object sender, RoutedEventArgs e)
         {
             StartAdb();
-            FindDevice();
+            //StartDeviceMonitor();
         }
 
         private void GrantButton_Click(object sender, RoutedEventArgs e)
@@ -54,7 +62,7 @@ namespace FluidNGPermissionGranter
             MessageBox.Show("Done! Restart application to see the changes", "Congratulations");
             CloseButton.IsEnabled = true;
         }
-       
+
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             SendToAdb("am force-stop com.fb.fluid");
@@ -67,7 +75,6 @@ namespace FluidNGPermissionGranter
             try
             {
                 var result = server.StartServer(adbPath, false);
-                LogWindow.RichText += "\nADB server started successful: " + result;
             }
             catch
             {
@@ -77,15 +84,15 @@ namespace FluidNGPermissionGranter
         }
 
         //  Trying to find device and show message about it 
+        /*
         private void FindDevice()
         {
             var devices = AdbClient.Instance.GetDevices();
 
-            if(devices.Count != 0)
+            if (devices.Count != 0)
             {
                 foreach (var device in devices)
                 {
-                    
                     MessageBox.Show("The device has been found. Your device is: " + device.Name, "Message");
                     GrantButton.IsEnabled = true;
                 }
@@ -95,7 +102,7 @@ namespace FluidNGPermissionGranter
                 MessageBox.Show("Can't find device. Please check your connection", "Message");
             }
         }
-
+        */
         private static string SendToAdb(string command)
         {
             try
@@ -108,8 +115,21 @@ namespace FluidNGPermissionGranter
             catch
             {
                 MessageBox.Show("Connection lost. Check your USB cable and try again.");
-                return "Connection lost. Check your USB cable and try again";
+                return "Connection lost. Check your USB cable and try again.";
             }
+        }
+
+        private void StartDeviceMonitor()
+        {
+            var monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
+            monitor.DeviceConnected += this.OnDeviceConnected;
+            monitor.Start();
+        }
+
+        private void OnDeviceConnected(object sender, DeviceDataEventArgs e)
+        {
+            MessageBox.Show("The device has been found. Continue from step 3.");
+            GrantButton.IsEnabled = true;
         }
     }
 }
