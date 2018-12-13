@@ -1,10 +1,15 @@
 ﻿namespace FluidNGPermissionGranter
 {
-    public partial class allowADBWindow
+    public partial class AllowADBWindow
     {
-        public allowADBWindow()
+        public AllowADBWindow()
         {
             InitializeComponent();
+        }
+
+        private void Window_SourceInitialized(object sender, System.EventArgs e)
+        {
+            IconHelper.RemoveIcon(this);
         }
     }
 }

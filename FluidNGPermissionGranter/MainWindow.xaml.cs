@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Diagnostics;
 using SharpAdbClient;
 
 namespace FluidNGPermissionGranter
@@ -10,8 +13,9 @@ namespace FluidNGPermissionGranter
     {
         private readonly AdbServer server = new AdbServer();
         private readonly string adbPath;
-        //private LogWindow logWindow;
         private ADBGuide adbGuideWindow;
+        private AllowADBWindow allowWindow;
+        private DeviceMonitor monitor;
 
         public MainWindow()
         {
@@ -52,21 +56,37 @@ namespace FluidNGPermissionGranter
 
         private void FindButton_Click(object sender, RoutedEventArgs e)
         {
-            StartAdb();
-            //StartDeviceMonitor();
+            StartAdb(); //  Start ADB server
+            System.Collections.Generic.List<DeviceData> devices = AdbClient.Instance.GetDevices();  //  Getting list of connected devices
+            //  If device connected - just find it
+            if (devices != null && devices.Count != 0)
+            {
+                StartDeviceMonitor();
+            }
+            //  If device is not connected - then show help window 
+            else
+            {
+                allowWindow = new AllowADBWindow { Title = "Help", Owner = Application.Current.MainWindow };
+                allowWindow.Show();
+                StartDeviceMonitor();
+            }
         }
 
         private void GrantButton_Click(object sender, RoutedEventArgs e)
         {
-            SendToAdb("pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS");
-            MessageBox.Show("Done! Restart application to see the changes", "Congratulations");
-            CloseButton.IsEnabled = true;
-        }
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            SendToAdb("am force-stop com.fb.fluid");
-            SendToAdb("am start -n com.fb.fluid/com.fb.fluid.ActivityMain");
+            string output = SendToAdb("pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS");    //  Trying to grant permission 
+            //  If output is *nothing*, then it means that there is no any erroФrs, and we can show Successful window
+            if (output == "")    
+            {
+                MessageBox.Show("Done! Now you can hide navigation bar", "Successful");
+                //  Restarting Fluid Navigation Gestures app on device
+                SendToAdb("am force-stop com.fb.fluid");
+                SendToAdb("am start -n com.fb.fluid/com.fb.fluid.ActivityMain");
+            }
+            else
+            {
+                MessageBox.Show("Can't grant permission. Please check your connection and try again. \nError: " + output);
+            }
         }
         #endregion
         private void StartAdb()
@@ -74,35 +94,15 @@ namespace FluidNGPermissionGranter
             // Trying to start ADB server and find device 
             try
             {
-                var result = server.StartServer(adbPath, false);
+                server.StartServer(adbPath, false);
             }
             catch
             {
                 MessageBox.Show("Can't start ADB server. Please check Log and ask developer for it");
-                LogWindow.RichText += "Can't start ADB server";
+                //LogWindow.RichText += "Can't start ADB server";
             }
         }
 
-        //  Trying to find device and show message about it 
-        /*
-        private void FindDevice()
-        {
-            var devices = AdbClient.Instance.GetDevices();
-
-            if (devices.Count != 0)
-            {
-                foreach (var device in devices)
-                {
-                    MessageBox.Show("The device has been found. Your device is: " + device.Name, "Message");
-                    GrantButton.IsEnabled = true;
-                }
-            }
-            else
-            {
-                MessageBox.Show("Can't find device. Please check your connection", "Message");
-            }
-        }
-        */
         private static string SendToAdb(string command)
         {
             try
@@ -112,24 +112,28 @@ namespace FluidNGPermissionGranter
                 AdbClient.Instance.ExecuteRemoteCommand(command, device, receiver);
                 return receiver.ToString();
             }
-            catch
-            {
-                MessageBox.Show("Connection lost. Check your USB cable and try again.");
-                return "Connection lost. Check your USB cable and try again.";
-            }
+            catch { return "error"; } 
         }
 
         private void StartDeviceMonitor()
         {
-            var monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
-            monitor.DeviceConnected += this.OnDeviceConnected;
-            monitor.Start();
+            if(monitor == null)
+            {
+                monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
+                monitor.DeviceConnected += this.OnDeviceConnected;
+                monitor.Start();
+            }
         }
 
         private void OnDeviceConnected(object sender, DeviceDataEventArgs e)
         {
-            MessageBox.Show("The device has been found. Continue from step 3.");
-            GrantButton.IsEnabled = true;
+            MessageBox.Show("The device has been found." );
+        }
+
+        private void OnAllowWindowLoaded()
+        {
+            allowWindow.Close();
+            allowWindow.Loaded += null;
         }
     }
-}
+}   

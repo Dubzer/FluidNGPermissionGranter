@@ -1,16 +1,16 @@
-﻿<Window x:Class="FluidNGPermissionGranter.allowADBWindow"
+﻿<Window x:Class="FluidNGPermissionGranter.AllowADBWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Height="186.496" Width="270">
+        Height="296.221" Width="456" ResizeMode="NoResize" SourceInitialized="Window_SourceInitialized"> 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="9*"/>
             <RowDefinition Height="32*" />
         </Grid.RowDefinitions>
-        <Label Content="If you have window like that on your device, &#xA;than press OK" HorizontalContentAlignment="Center" FontSize="9" />
+        <Label Content="If you have window like this on your device, &#xA;than press OK" HorizontalContentAlignment="Center" FontSize="18" />
         <Image Grid.Row="1" Source="Resources/allow.png"/>
     </Grid>
 </Window>

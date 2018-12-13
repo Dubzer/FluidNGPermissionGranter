@@ -29,6 +29,7 @@ namespace FluidNGPermissionGranter
         }
         */
 
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             RichText = new TextRange(Console.Document.ContentStart, Console.Document.ContentEnd).Text;
