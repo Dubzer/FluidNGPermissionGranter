@@ -7,6 +7,7 @@
  - Fluid N.G. Permission Granter is app that I made in my free time
    that's granting "WRITE_SECURE_SETTINGS" permission with User
    Interface. 
+   
 ![alt text](https://raw.githubusercontent.com/Dubzer/FluidNGPermissionGranter/readme/screenshots/mainwindow.png)
 
 **Building**
