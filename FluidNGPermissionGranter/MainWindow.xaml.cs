@@ -137,10 +137,10 @@ namespace FluidNGPermissionGranter
             if (allowWindow != null)
             {
                 //  Shitty code (as usual), but it's worse than before, so I have to change it (and never change)
-                CloseHelpWindow += () => allowWindow.Dispatcher.BeginInvoke(new ThreadStart(() => allowWindow.Close()));
-                CloseHelpWindow();
+                allowWindow.Dispatcher.BeginInvoke(new ThreadStart(() => allowWindow.Close()));
             }
             MessageBox.Show("The device has been found");
+            Dispatcher.BeginInvoke(new ThreadStart(() => GrantButton.IsEnabled = true));
         }
     }
 }
