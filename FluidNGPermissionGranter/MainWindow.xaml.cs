@@ -2,9 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Diagnostics;
 using SharpAdbClient;
 
 namespace FluidNGPermissionGranter
@@ -16,6 +14,7 @@ namespace FluidNGPermissionGranter
         private ADBGuide adbGuideWindow;
         private AllowADBWindow allowWindow;
         private DeviceMonitor monitor;
+        private event Action CloseHelpWindow = delegate { };
 
         public MainWindow()
         {
@@ -63,13 +62,14 @@ namespace FluidNGPermissionGranter
             {
                 StartDeviceMonitor();
             }
-            //  If device is not connected - then show help window 
+            //  If device is not connected => Show help window 
             else
             {
                 allowWindow = new AllowADBWindow { Title = "Help", Owner = Application.Current.MainWindow };
                 allowWindow.Show();
+
                 StartDeviceMonitor();
-            }
+            } 
         }
 
         private void GrantButton_Click(object sender, RoutedEventArgs e)
@@ -78,14 +78,15 @@ namespace FluidNGPermissionGranter
             //  If output is *nothing*, then it means that there is no any erroФrs, and we can show Successful window
             if (output == "")    
             {
-                MessageBox.Show("Done! Now you can hide navigation bar", "Successful");
+                MessageBox.Show("Done! Now you can hide navigation bar", "Success");
+
                 //  Restarting Fluid Navigation Gestures app on device
                 SendToAdb("am force-stop com.fb.fluid");
                 SendToAdb("am start -n com.fb.fluid/com.fb.fluid.ActivityMain");
             }
             else
             {
-                MessageBox.Show("Can't grant permission. Please check your connection and try again. \nError: " + output);
+                MessageBox.Show(output);
             }
         }
         #endregion
@@ -99,7 +100,6 @@ namespace FluidNGPermissionGranter
             catch
             {
                 MessageBox.Show("Can't start ADB server. Please check Log and ask developer for it");
-                //LogWindow.RichText += "Can't start ADB server";
             }
         }
 
@@ -112,28 +112,35 @@ namespace FluidNGPermissionGranter
                 AdbClient.Instance.ExecuteRemoteCommand(command, device, receiver);
                 return receiver.ToString();
             }
-            catch { return "error"; } 
+            catch { return "Can`t send command by ADB. Please check your connection and try again. Also try to redo second step."; } 
         }
 
+        //  This thing searching for device every time after started 
         private void StartDeviceMonitor()
         {
-            if(monitor == null)
+            //  If device monitor is not started =>
+            if (monitor == null)
             {
+                //  Starting device monitor here 
+           
                 monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
                 monitor.DeviceConnected += this.OnDeviceConnected;
+
                 monitor.Start();
             }
         }
-
+        
+        //  What happens after device connected
         private void OnDeviceConnected(object sender, DeviceDataEventArgs e)
         {
-            MessageBox.Show("The device has been found." );
-        }
-
-        private void OnAllowWindowLoaded()
-        {
-            allowWindow.Close();
-            allowWindow.Loaded += null;
+            //  If allowWindow exists => Close it when device connected 
+            if (allowWindow != null)
+            {
+                //  Shitty code (as usual), but it's worse than before, so I have to change it (and never change)
+                CloseHelpWindow += () => allowWindow.Dispatcher.BeginInvoke(new ThreadStart(() => allowWindow.Close()));
+                CloseHelpWindow();
+            }
+            MessageBox.Show("The device has been found");
         }
     }
-}   
+}

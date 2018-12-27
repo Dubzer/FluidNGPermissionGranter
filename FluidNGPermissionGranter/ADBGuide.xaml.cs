@@ -41,6 +41,5 @@ namespace FluidNGPermissionGranter
         {
             Process.Start("https://tgraph.io/Enable-developer-options-and-debugging-11-24"); 
         }
-
     }
 }
