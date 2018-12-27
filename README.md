@@ -1,5 +1,5 @@
 # FluidNGPermissionGranter
-[Download last build](https://github.com/Dubzer/FluidNGPermissionGranter/releases/download/r2/FluidNGPermissionGranter.zip)
+[Download last build](https://github.com/Dubzer/FluidNGPermissionGranter/releases/download/r2.1/FluidNGPermissionGranter.zip)
 
 [All releases](https://github.com/Dubzer/FluidNGPermissionGranter/releases) 
 
