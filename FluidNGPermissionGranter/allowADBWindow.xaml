@@ -11,6 +11,6 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Image Grid.Row="0" Source="Resources/allow.png" Margin="10,10,10,0"/>
-        <Label Grid.Row="1" Content="If you have window like this on your device, &#xA;than press OK" HorizontalContentAlignment="Center" FontSize="18" />
+        <Label Grid.Row="1" Content="If you have window like this on your device, &#xA;                        than press OK" HorizontalContentAlignment="Center" FontSize="18" />
     </Grid>
 </Window>

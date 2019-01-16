@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Windows;
+using System.Windows.Threading;
 using SharpAdbClient;
 
 namespace FluidNGPermissionGranter
@@ -12,18 +14,25 @@ namespace FluidNGPermissionGranter
         private readonly AdbServer server = new AdbServer();
         private readonly string adbPath;
         private ADBGuide adbGuideWindow;
-        private AllowADBWindow allowWindow;
+        private AllowADBWindow allowADBWindow;
+        private ConnectGuide connectWindow;
         private DeviceMonitor monitor;
-        private event Action CloseHelpWindow = delegate { };
+        private DoneWindow doneWindow;
 
         public MainWindow()
         {
             InitializeComponent();
-            adbPath = (System.IO.Directory.GetCurrentDirectory() + @"\adb\adb.exe"); // Getting path of ADB tools 
+            adbPath = (System.IO.Directory.GetCurrentDirectory() + @"\adb\adb.exe"); // Getting path of ADB tools \
+            
         }
 
         // Closing adb server after closing program
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            StopApplication();
+        }
+
+        public static void StopApplication()
         {
             try
             {
@@ -34,13 +43,13 @@ namespace FluidNGPermissionGranter
             }
             catch
             {
-                Application.Current.Shutdown();
+                Environment.Exit(0);
             }
-            Application.Current.Shutdown();
+            Environment.Exit(0);
         }
 
         // Removing icon on the top of window 
-        protected override void OnSourceInitialized(EventArgs e)
+        private void Window_SourceInitialized(object sender, EventArgs e)
         {
             IconHelper.RemoveIcon(this);
         }
@@ -53,40 +62,32 @@ namespace FluidNGPermissionGranter
             adbGuideWindow.ShowDialog();
         }
 
-        private void FindButton_Click(object sender, RoutedEventArgs e)
-        {
-            StartAdb(); //  Start ADB server
-            System.Collections.Generic.List<DeviceData> devices = AdbClient.Instance.GetDevices();  //  Getting list of connected devices
-            //  If device connected - just find it
-            if (devices != null && devices.Count != 0)
-            {
-                StartDeviceMonitor();
-            }
-            //  If device is not connected => Show help window 
-            else
-            {
-                allowWindow = new AllowADBWindow { Title = "Help", Owner = Application.Current.MainWindow };
-                allowWindow.Show();
-
-                StartDeviceMonitor();
-            } 
-        }
-
         private void GrantButton_Click(object sender, RoutedEventArgs e)
         {
-            string output = SendToAdb("pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS");    //  Trying to grant permission 
-            //  If output is *nothing*, then it means that there is no any erroФrs, and we can show Successful window
-            if (output == "")    
+            StartAdb(); //  Start ADB server
+            try
             {
-                MessageBox.Show("Done! Now you can hide navigation bar", "Success");
-
-                //  Restarting Fluid Navigation Gestures app on device
-                SendToAdb("am force-stop com.fb.fluid");
-                SendToAdb("am start -n com.fb.fluid/com.fb.fluid.ActivityMain");
+                System.Collections.Generic.List<DeviceData> devices = AdbClient.Instance.GetDevices();  //  Getting list of connected devices
+                //  If device connected - just find it
+                if (devices != null && devices.Count != 0)
+                {
+                    StartDeviceMonitor();
+                }
+                //  If device is not connected => Show help window 
+                else
+                {
+                    connectWindow = new ConnectGuide{ Title = "", Owner = Application.Current.MainWindow };
+                    StartDeviceMonitor();
+                    connectWindow.ShowDialog();
+                }
             }
-            else
+            catch (Exception exception)
             {
-                MessageBox.Show(output);
+                MessageBoxResult result = MessageBox.Show("Some error detected. Please, send screenshot with this text to developer. Do you want to send now?: \n \n" + exception,"Error", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Process.Start("https://dubzer.github.io");
+                }
             }
         }
         #endregion
@@ -112,9 +113,34 @@ namespace FluidNGPermissionGranter
                 AdbClient.Instance.ExecuteRemoteCommand(command, device, receiver);
                 return receiver.ToString();
             }
-            catch { return "Can`t send command by ADB. Please check your connection and try again. Also try to redo second step."; } 
+            catch(Exception exception)
+            {
+                MessageBoxResult result = MessageBox.Show("Can`t send command by ADB. Please check your connection and try again. Also, try to redo the second step. Moreover, you can ask for it to the developer: \n \n" + exception, "Error", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Process.Start("https://dubzer.github.io");
+                }
+                return "error";
+            }
         }
 
+        private void GrantPermission()
+        {
+            string output = SendToAdb("pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS");    //  Trying to grant permission 
+            //  If output is *nothing*, then it means that there is no any errors, and we can show Successful window
+            if (output == "")
+            {
+                doneWindow = new DoneWindow() { Title = "", Owner = Application.Current.MainWindow };
+                doneWindow.ShowDialog();
+                //  Restarting Fluid Navigation Gestures app on device
+                SendToAdb("am force-stop com.fb.fluid");
+                SendToAdb("am start -n com.fb.fluid/com.fb.fluid.ActivityMain");
+            }
+            else
+            {
+                MessageBox.Show("Unexpected output: \n \n + output");
+            }
+        }
         //  This thing searching for device every time after started 
         private void StartDeviceMonitor()
         {
@@ -125,7 +151,7 @@ namespace FluidNGPermissionGranter
            
                 monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
                 monitor.DeviceConnected += this.OnDeviceConnected;
-
+                
                 monitor.Start();
             }
         }
@@ -133,14 +159,48 @@ namespace FluidNGPermissionGranter
         //  What happens after device connected
         private void OnDeviceConnected(object sender, DeviceDataEventArgs e)
         {
-            //  If allowWindow exists => Close it when device connected 
-            if (allowWindow != null)
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
-                //  Shitty code (as usual), but it's worse than before, so I have to change it (and never change)
-                allowWindow.Dispatcher.BeginInvoke(new ThreadStart(() => allowWindow.Close()));
-            }
-            MessageBox.Show("The device has been found");
-            Dispatcher.BeginInvoke(new ThreadStart(() => GrantButton.IsEnabled = true));
+                if (connectWindow != null)
+                {
+                    connectWindow.Close();
+                    connectWindow = null;
+                }
+
+                switch (AdbClient.Instance.GetDevices().First().State)
+                {
+                    case DeviceState.Online:
+                        try
+                        {
+                            GrantPermission();
+                        }
+                        catch (Exception exception)
+                        {
+                            MessageBox.Show(exception.ToString());
+                            throw;
+                        }
+                        break;
+                    case DeviceState.Unauthorized:
+                        //Showing help window to authorize adb server 
+                        allowADBWindow = new AllowADBWindow();
+                        allowADBWindow.Show();
+                        while (allowADBWindow.IsLoaded == false) { }    //  Waiting for loading window 
+                        while (AdbClient.Instance.GetDevices().First().State != DeviceState.Online) { } //  Waiting to get Online phone 
+                        allowADBWindow.Close();
+                        GrantButton.IsEnabled = true;
+                        try
+                        {
+                            GrantPermission();
+                        }
+                        catch (Exception exception)
+                        {
+                            MessageBox.Show(exception.ToString());
+                            throw;
+                        }
+                        break;
+                }
+            }));
         }
+
     }
 }

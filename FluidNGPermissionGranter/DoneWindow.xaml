@@ -1,0 +1,15 @@
+﻿<Window x:Class="FluidNGPermissionGranter.DoneWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FluidNGPermissionGranter"
+        mc:Ignorable="d" Height="195.101" Width="400.586" ResizeMode="NoResize" Closing="Window_Closing" WindowStartupLocation="CenterOwner" SourceInitialized="Window_SourceInitialized">
+    <Grid>
+        <Image HorizontalAlignment="Left" Height="100" VerticalAlignment="Center" Width="100"  Source="Resources/fnglogo.png" Margin="10" />
+        <Label Content="Done!" HorizontalAlignment="Left" Margin="125,15,0,0" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" Height="36"/>
+        <Label Content="Now you can start using &#xD;&#xA;Fluid Navigation Gestures" HorizontalAlignment="Left" Margin="125,51,-30,0" VerticalAlignment="Top" Height="53" Width="300" FontSize="15"/>
+        <Button Content="Exit" HorizontalAlignment="Left" Margin="128,112,0,0" VerticalAlignment="Top" Width="100" Background="White" FontSize="13" Height="28" Click="Button_Click"/>
+
+    </Grid>
+</Window>

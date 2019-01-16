@@ -4,19 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Fluid N.G. Permission Granter" Height="409" Width="330" Background="White" ResizeMode="NoResize" WindowStartupLocation="Manual" Closing="Window_Closing">
+        Title="Fluid N.G. Permission Granter" Height="409" Width="330" Background="White" ResizeMode="NoResize" WindowStartupLocation="Manual" Closing="Window_Closing" SourceInitialized="Window_SourceInitialized">
     <Grid>
         <Grid Grid.Column="0" HorizontalAlignment="Center">
             
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="190"/>
+                <ColumnDefinition Width="230"/>
             </Grid.ColumnDefinitions>
             
             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                <Label Content="Follow the steps:" HorizontalContentAlignment="Center" FontSize="16"/>
-                <Button Click="GuideButton_Click" Content="1. Activate ADB on your device" FontSize="13" Height="28" Margin="3" IsDefault="True"/>
-                <Button Name="FindButton" Click="FindButton_Click" Content="2. Find your device" FontSize="13" Height="28" Margin="3"/>
-                <Button Name="GrantButton" Click="GrantButton_Click" Content="3. Grant permission" FontSize="13" Height="28" Margin="3" IsEnabled="False"/>
+                <Label Content="Follow the steps:" HorizontalContentAlignment="Center" FontSize="20"/>
+                <Button Click="GuideButton_Click" Content="1. Activate ADB on your device" FontSize="15" Height="35" Margin="3" IsDefault="True"/>
+                <Button Name="GrantButton" Click="GrantButton_Click" Content="2. Grant permission" FontSize="15" Height="35" Margin="3"/>
                 <!--                 <Button Click="LogButton_Click" Content="Log info" FontSize="13" Height="28" Margin="3" Background="White" BorderBrush="#FFBBBBBB" Foreground="#FFBBBBBB"/> -->
                 <!-- Button Name="CloseButton" Content="4. Restart Fluid N.G." FontSize="13" Height="28" IsEnabled="False" Margin="3" Click="CloseButton_Click"/> -->
             </StackPanel>

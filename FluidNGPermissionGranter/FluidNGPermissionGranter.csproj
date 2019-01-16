@@ -62,12 +62,26 @@
     <Compile Include="AllowADBWindow.xaml.cs">
       <DependentUpon>AllowADBWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConnectGuideWindow.xaml.cs">
+      <DependentUpon>ConnectGuideWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DoneWindow.xaml.cs">
+      <DependentUpon>DoneWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IconHelper.cs" />
     <Page Include="ADBGuide.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AllowADBWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConnectGuideWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DoneWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -125,6 +139,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\allow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\connect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\fnglogo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
