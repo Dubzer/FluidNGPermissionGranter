@@ -85,10 +85,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LogWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -99,9 +95,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="LogWindow.xaml.cs">
-      <DependentUpon>LogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -138,13 +131,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\allow.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\connect.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\fnglogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\allow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,13 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Height="309.554" Width="456" ResizeMode="NoResize" SourceInitialized="Window_SourceInitialized">
+        Height="385.971" Width="508.31" ResizeMode="NoResize" SourceInitialized="Window_SourceInitialized">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="207"/>
+            <RowDefinition Height="287"/>
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Image Grid.Row="0" Source="Resources/allow.png" Margin="10,10,10,0"/>
+        <Image Name="Image" Grid.Row="0" Source="Resources/allow.png" Margin="10,10,10,0"/>
         <Label Grid.Row="1" Content="If you have window like this on your device, &#xA;                        than press OK" HorizontalContentAlignment="Center" FontSize="18" />
     </Grid>
 </Window>
