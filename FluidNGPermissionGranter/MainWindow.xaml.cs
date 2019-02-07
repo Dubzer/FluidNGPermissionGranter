@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
@@ -188,40 +189,30 @@ namespace FluidNGPermissionGranter
 
         private void AfterAuthorization()
         {
-            if (!AdbClient.Instance.GetDevices().Any() ||
-                AdbClient.Instance.GetDevices().First().State == DeviceState.Offline ||
-                AdbClient.Instance.GetDevices().First().State == DeviceState.Unknown)
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => { authorizeWindow.Close(); }));
+
+            string grantOutput = GrantPermission();
+
+            if (grantOutput == "success")
             {
+                //  Showing "done" window 
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    authorizeWindow.Close();
-                    authorizeWindow = null;
-                    connectWindow = null;
-                    connectWindow = new ConnectGuide {Title = "", Owner = Application.Current.MainWindow};
-                    connectWindow.ShowDialog();
+                    doneWindow = new DoneWindow() { Title = "", Owner = Application.Current.MainWindow };
+                    doneWindow.ShowDialog();
+
                 }));
             }
             else
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                MessageBoxResult result = MessageBox.Show("Can`t send command by ADB. Please check your connection and try again. Also, try to redo the second step. Moreover, you can ask for help to the developer: \n \n" + grantOutput, "Error", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
                 {
-                    authorizeWindow.Close();
-                    GrantButton.IsEnabled = true;
-                }));
-
-                try
-                {
-                    GrantPermission();
-
+                    Process.Start("https://dubzer.github.io");
                 }
-                catch (Exception exception)
-                {
-                    MessageBox.Show(exception.ToString());
-                    throw;
-                }
-
-                authorizeWindow.ContentRendered -= AuthorizeWindowContentRendered;
             }
+
+            authorizeWindow.ContentRendered -= AuthorizeWindowContentRendered;
         }
 
         private static string SendToAdb(string command)
@@ -237,37 +228,23 @@ namespace FluidNGPermissionGranter
             // if can't => show error message and give a link to contact developer
             catch (Exception exception)
             {
-                MessageBoxResult result = MessageBox.Show("Can`t send command by ADB. Please check your connection and try again. Also, try to redo the second step. Moreover, you can ask for it to the developer: \n \n" + exception, "Error", MessageBoxButton.YesNo);
-                if (result == MessageBoxResult.Yes)
-                {
-                    Process.Start("https://dubzer.github.io");
-                }
                 return exception.ToString();
             }
         }
 
-        private void GrantPermission()
+        private string GrantPermission()
         {
             string output = SendToAdb("pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS");    //  Trying to grant permission 
             //  If output is *nothing*, then it means that there is no any errors, and we can show Successful window
             if (output == "")
             {
-                //  Showing "done" window 
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
-                {
-                    doneWindow = new DoneWindow() { Title = "", Owner = Application.Current.MainWindow };
-                    doneWindow.ShowDialog();
-
-                }));
-
                 //  Restarting Fluid Navigation Gestures app on device
                 SendToAdb("am force-stop com.fb.fluid");
                 SendToAdb("am start -n com.fb.fluid/com.fb.fluid.ActivityMain");
+                return "success";
             }
-            else
-            {
-                MessageBox.Show("Unexpected output: \n \n" + output);
-            }
+
+            return output;
         }
 
         // Stopping ADB server after closing program
