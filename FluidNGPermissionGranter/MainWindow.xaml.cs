@@ -11,19 +11,26 @@ namespace FluidNGPermissionGranter
 {
     public partial class MainWindow
     {
-        //  things about ADB
+        #region ADB stuff
+
         private readonly AdbServer server = new AdbServer();
         private readonly string adbPath;
         private DeviceMonitor monitor;  //  Device monitor. Its searching for device after creating 
 
+        #endregion
+
+        #region Windows
+
         private ADBGuide adbGuideWindow;    //  There you can find guide about activating ADB on phone
-        private ConnectGuide connectWindow;
-        private AllowADBWindow allowAdbWindow;
-        private DoneWindow doneWindow;
+        private ConnectGuide connectWindow;     // That's a connect message 
+        private AuthorizeWindow authorizeWindow;      // That's an authorize adb server message
+        private DoneWindow doneWindow;      //  This window appears when everything is done
+
+        #endregion
+
         private readonly Action phoneAuthorized;
-
         private static DeviceData device;
-
+        private Thread authorizationCheckThread;
 
         public MainWindow() 
         {
@@ -150,20 +157,20 @@ namespace FluidNGPermissionGranter
 
 
                         //Showing help window to authorize PC
-                        allowAdbWindow = new AllowADBWindow();
+                        authorizeWindow = new AuthorizeWindow();
                         
-                        allowAdbWindow.Show();
+                        authorizeWindow.Show();
                         AdbClient.Instance.GetDevices();
 
-                        allowAdbWindow.ContentRendered += AllowADBWindow_ContentRendered;
+                        authorizeWindow.ContentRendered += AuthorizeWindowContentRendered;
                         break;
                 }
             }));
         }
 
-        private void AllowADBWindow_ContentRendered(object sender, EventArgs e)
+        private void AuthorizeWindowContentRendered(object sender, EventArgs e)
         {
-            Thread authorizationCheckThread = new Thread(StartCheckForAuthorization);
+            authorizationCheckThread = new Thread(StartCheckForAuthorization);
             authorizationCheckThread.Start();
         }
 
@@ -187,8 +194,8 @@ namespace FluidNGPermissionGranter
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    allowAdbWindow.Close();
-                    allowAdbWindow = null;
+                    authorizeWindow.Close();
+                    authorizeWindow = null;
                     connectWindow = null;
                     connectWindow = new ConnectGuide {Title = "", Owner = Application.Current.MainWindow};
                     connectWindow.ShowDialog();
@@ -198,7 +205,7 @@ namespace FluidNGPermissionGranter
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    allowAdbWindow.Close();
+                    authorizeWindow.Close();
                     GrantButton.IsEnabled = true;
                 }));
 
@@ -213,7 +220,7 @@ namespace FluidNGPermissionGranter
                     throw;
                 }
 
-                allowAdbWindow.ContentRendered -= AllowADBWindow_ContentRendered;
+                authorizeWindow.ContentRendered -= AuthorizeWindowContentRendered;
             }
         }
 
@@ -266,6 +273,7 @@ namespace FluidNGPermissionGranter
         // Stopping ADB server after closing program
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            authorizationCheckThread.Abort();
             #region closing all windows
 
             if (adbGuideWindow != null)
@@ -278,10 +286,10 @@ namespace FluidNGPermissionGranter
                 connectWindow.Close();
                 connectWindow = null;
             }
-            else if (allowAdbWindow != null)
+            else if (authorizeWindow != null)
             {
-                allowAdbWindow.Close();
-                allowAdbWindow = null;
+                authorizeWindow.Close();
+                authorizeWindow = null;
             }
             else if (doneWindow != null)
             {
@@ -296,7 +304,6 @@ namespace FluidNGPermissionGranter
 
         public static void StopApplication()
         {
-
             //  Trying to kill ADB Server process 
             try
             {

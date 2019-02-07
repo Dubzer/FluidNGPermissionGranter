@@ -2,9 +2,9 @@
 
 namespace FluidNGPermissionGranter
 {
-    public partial class AllowADBWindow
+    public partial class AuthorizeWindow
     {
-        public AllowADBWindow()
+        public AuthorizeWindow()
         {
             InitializeComponent();
         }
