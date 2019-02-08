@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -46,45 +47,50 @@ namespace FluidNGPermissionGranter
             IconHelper.RemoveIcon(this);
         }
 
-        #region Button actions 
+        #region Button methods 
 
-        //  The first button
         private void GuideButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenGuideWindow();
+        }
+
+        private void GrantButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartAdb();
+            try
+            {
+                var devices = AdbClient.Instance.GetDevices();
+                if (devices != null && devices.Count != 0)
+                { 
+                    StartDeviceMonitor(monitor);
+                }
+                else
+                {
+                    OpenConnectWindow();
+                    StartDeviceMonitor(monitor);
+                }
+            }
+            catch (Exception exception)
+            {
+                MessageBoxResult result = MessageBox.Show("Some error detected. Please, send screenshot with this text to developer. Do you want to send now?: \n \n" + exception,"Error", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes) { Process.Start("https://dubzer.github.io"); }
+            }
+        }
+
+        #endregion
+
+        #region Windows methods
+
+        private void OpenGuideWindow()
         {
             adbGuideWindow = new ADBGuide { ShowInTaskbar = false, Owner = Application.Current.MainWindow };
             adbGuideWindow.ShowDialog();
         }
 
-        //  The second button
-        private void GrantButton_Click(object sender, RoutedEventArgs e)
+        private void OpenConnectWindow()
         {
-            StartAdb(); //  Start ADB server
-            //  Trying to find device 
-            try
-            {
-                System.Collections.Generic.List<DeviceData> devices = AdbClient.Instance.GetDevices();  //  Getting list of connected devices
-                //  If device connected - just connect it
-                if (devices != null && devices.Count != 0)
-                {
-                    StartDeviceMonitor();
-                }
-                //  If device is not connected => Show help window
-                else
-                {
-                    connectWindow = new ConnectGuide{ Title = "", Owner = Application.Current.MainWindow };
-                    StartDeviceMonitor();
-                    connectWindow.ShowDialog();
-                }
-            }
-            //  If can't start Device monitor => show error message
-            catch (Exception exception)
-            {
-                MessageBoxResult result = MessageBox.Show("Some error detected. Please, send screenshot with this text to developer. Do you want to send now?: \n \n" + exception,"Error", MessageBoxButton.YesNo);
-                if (result == MessageBoxResult.Yes)
-                {
-                    Process.Start("https://dubzer.github.io");
-                }
-            }
+            connectWindow = new ConnectGuide { Title = "", Owner = Application.Current.MainWindow };
+            connectWindow.ShowDialog();
         }
 
         #endregion
@@ -98,12 +104,14 @@ namespace FluidNGPermissionGranter
             }
             catch
             {
-                MessageBox.Show("Can't start ADB server. Please check Log and ask developer for it");
+                MessageBox.Show(File.Exists(adbPath)
+                    ? "Can't start ADB server. Please, check Log and ask developer for it"
+                    : "Can't find ADB server EXE. Please, redownload app. ");
             }
         }
 
         //  This thing searching for device every time after started 
-        private void StartDeviceMonitor()
+        private void StartDeviceMonitor(DeviceMonitor monitor)
         {
             //  If device monitor is not started =>
             if (monitor == null)
@@ -131,12 +139,10 @@ namespace FluidNGPermissionGranter
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
-                //  Closing connect help window if its opened 
                 if (connectWindow != null)
                 {
                     connectWindow.Close();
                     connectWindow = null;
-
                 }
 
                 switch (AdbClient.Instance.GetDevices().First().State)
@@ -164,6 +170,9 @@ namespace FluidNGPermissionGranter
                         AdbClient.Instance.GetDevices();
 
                         authorizeWindow.ContentRendered += AuthorizeWindowContentRendered;
+                        break;
+                    default:
+                        OpenConnectWindow();
                         break;
                 }
             }));
@@ -198,7 +207,7 @@ namespace FluidNGPermissionGranter
                 //  Showing "done" window 
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    doneWindow = new DoneWindow() { Title = "", Owner = Application.Current.MainWindow };
+                    doneWindow = new DoneWindow { Title = "", Owner = Application.Current.MainWindow };
                     doneWindow.ShowDialog();
 
                 }));
