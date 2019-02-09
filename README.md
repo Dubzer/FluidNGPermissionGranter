@@ -11,6 +11,9 @@
    
 ![alt text](https://raw.githubusercontent.com/Dubzer/FluidNGPermissionGranter/readme/screenshots/mainwindow.png)
 
+![alt text](https://raw.githubusercontent.com/Dubzer/FluidNGPermissionGranter/readme/screenshots/connectwindow.png)
+![alt text](https://raw.githubusercontent.com/Dubzer/FluidNGPermissionGranter/readme/screenshots/donewindow.png)
+
 **Building**
  - Clone the repository
  - Open **FluidNGPermissionGranter.sln** in Visual Studio 2017+
