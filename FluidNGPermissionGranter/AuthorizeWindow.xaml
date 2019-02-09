@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Height="376" Width="508.31" ResizeMode="NoResize" SourceInitialized="Window_SourceInitialized">
+        Height="376" Width="508.31" ResizeMode="NoResize" SourceInitialized="Window_SourceInitialized" WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="287"/>
