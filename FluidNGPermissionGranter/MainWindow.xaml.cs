@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
@@ -37,8 +36,8 @@ namespace FluidNGPermissionGranter
         public MainWindow() 
         {
             InitializeComponent();
-            adbPath = (System.IO.Directory.GetCurrentDirectory() + @"\adb\adb.exe"); // Getting path of ADB tools 
-            phoneAuthorized += AfterAuthorization;  // Setiing method for action 
+            adbPath = (Directory.GetCurrentDirectory() + @"\adb\adb.exe"); // Getting path of ADB tools 
+            phoneAuthorized += AfterAuthorization;  // Setting method for action 
         }
 
         // Removing icon on the top of the window 
@@ -62,12 +61,12 @@ namespace FluidNGPermissionGranter
                 var devices = AdbClient.Instance.GetDevices();
                 if (devices != null && devices.Count != 0)
                 { 
-                    StartDeviceMonitor(monitor);
+                    StartDeviceMonitor();
                 }
                 else
                 {
                     OpenConnectWindow();
-                    StartDeviceMonitor(monitor);
+                    StartDeviceMonitor();
                 }
             }
             catch (Exception exception)
@@ -93,6 +92,12 @@ namespace FluidNGPermissionGranter
             connectWindow.ShowDialog();
         }
 
+        private void CloseConnectWindow()
+        {
+            connectWindow.Close();
+            connectWindow = null;
+        }
+
         #endregion
 
         private void StartAdb()
@@ -110,27 +115,24 @@ namespace FluidNGPermissionGranter
             }
         }
 
-        //  This thing searching for device every time after started 
-        private void StartDeviceMonitor(DeviceMonitor monitor)
+        private void CreateDeviceMonitor()
         {
-            //  If device monitor is not started =>
+            monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
+            monitor.DeviceConnected += OnDeviceConnected;
+        }
+
+        private void StartDeviceMonitor()
+        {
             if (monitor == null)
             {
-                //  Starting device monitor here 
-
-                monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
-                monitor.DeviceConnected += OnDeviceConnected;
-
+                CreateDeviceMonitor();
                 monitor.Start();
             }
             else
             {
                 monitor = null;
-                monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
-                monitor.DeviceConnected += OnDeviceConnected;
-
+                CreateDeviceMonitor();
                 monitor.Start();
-
             }
         }
         
@@ -140,10 +142,7 @@ namespace FluidNGPermissionGranter
             Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
                 if (connectWindow != null)
-                {
-                    connectWindow.Close();
-                    connectWindow = null;
-                }
+                    CloseConnectWindow();
 
                 switch (AdbClient.Instance.GetDevices().First().State)
                 {
@@ -260,30 +259,6 @@ namespace FluidNGPermissionGranter
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             authorizationCheckThread.Abort();
-            #region closing all windows
-
-            if (adbGuideWindow != null)
-            {
-                adbGuideWindow.Close();
-                adbGuideWindow = null;
-            }
-            else if (connectWindow != null)
-            {
-                connectWindow.Close();
-                connectWindow = null;
-            }
-            else if (authorizeWindow != null)
-            {
-                authorizeWindow.Close();
-                authorizeWindow = null;
-            }
-            else if (doneWindow != null)
-            {
-                doneWindow.Close();
-                doneWindow = null;
-            }
-
-            #endregion
 
             StopApplication();
         }
