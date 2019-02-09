@@ -13,11 +13,9 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                <Label Content="Follow the steps:" HorizontalContentAlignment="Center" FontSize="20"/>
+                <Label Name="TopLabel" Content="Follow the steps:" HorizontalContentAlignment="Center" FontSize="20"/>
                 <Button Click="GuideButton_Click" Content="1. Activate ADB on your device" FontSize="15" Height="35" Margin="3" IsDefault="True" Background="#f5f5f5"/>
                 <Button Name="GrantButton" Click="GrantButton_Click" Content="2. Grant permission" FontSize="15" Height="35" Margin="3" Background="#f5f5f5"/>
-                <!--                 <Button Click="LogButton_Click" Content="Log info" FontSize="13" Height="28" Margin="3" Background="White" BorderBrush="#FFBBBBBB" Foreground="#FFBBBBBB"/> -->
-                <!-- Button Name="CloseButton" Content="4. Restart Fluid N.G." FontSize="13" Height="28" IsEnabled="False" Margin="3" Click="CloseButton_Click"/> -->
             </StackPanel>
 
         </Grid> 

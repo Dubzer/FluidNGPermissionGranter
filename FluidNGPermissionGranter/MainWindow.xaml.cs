@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpAdbClient;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -6,7 +7,6 @@ using System.Net;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using SharpAdbClient;
 
 namespace FluidNGPermissionGranter
 {
@@ -33,7 +33,7 @@ namespace FluidNGPermissionGranter
         private static DeviceData device;
         private Thread authorizationCheckThread;
 
-        public MainWindow() 
+        public MainWindow()
         {
             InitializeComponent();
             adbPath = (Directory.GetCurrentDirectory() + @"\adb\adb.exe"); // Getting path of ADB tools 
@@ -60,18 +60,18 @@ namespace FluidNGPermissionGranter
             {
                 var devices = AdbClient.Instance.GetDevices();
                 if (devices != null && devices.Count != 0)
-                { 
+                {
                     StartDeviceMonitor();
                 }
                 else
                 {
-                    OpenConnectWindow();
                     StartDeviceMonitor();
+                    OpenConnectWindow();
                 }
             }
             catch (Exception exception)
             {
-                MessageBoxResult result = MessageBox.Show("Some error detected. Please, send screenshot with this text to developer. Do you want to send now?: \n \n" + exception,"Error", MessageBoxButton.YesNo);
+                MessageBoxResult result = MessageBox.Show("Some error detected. Please, send screenshot with this text to developer. Do you want to send now?: \n \n" + exception, "Error", MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes) { Process.Start("https://dubzer.github.io"); }
             }
         }
@@ -135,7 +135,7 @@ namespace FluidNGPermissionGranter
                 monitor.Start();
             }
         }
-        
+
         //  What happens after device connected
         private void OnDeviceConnected(object sender, DeviceDataEventArgs e)
         {
@@ -147,13 +147,14 @@ namespace FluidNGPermissionGranter
                 switch (AdbClient.Instance.GetDevices().First().State)
                 {
                     case DeviceState.Online:
+                        string output = "nothing";
                         try
                         {
-                            GrantPermission();
+                            output = GrantPermission();
                         }
                         catch (Exception exception)
                         {
-                            MessageBox.Show(exception.ToString());
+                            MessageBox.Show(exception.ToString() + "\n\n ADB said: \n " + output);
                             throw;
                         }
                         break;
@@ -161,10 +162,9 @@ namespace FluidNGPermissionGranter
                         device = AdbClient.Instance.GetDevices().First();
                         Debug.Print(device.GetType().ToString());
 
-
                         //Showing help window to authorize PC
                         authorizeWindow = new AuthorizeWindow();
-                        
+
                         authorizeWindow.Show();
                         AdbClient.Instance.GetDevices();
 
@@ -208,7 +208,6 @@ namespace FluidNGPermissionGranter
                 {
                     doneWindow = new DoneWindow { Title = "", Owner = Application.Current.MainWindow };
                     doneWindow.ShowDialog();
-
                 }));
             }
             else
@@ -259,13 +258,11 @@ namespace FluidNGPermissionGranter
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             authorizationCheckThread.Abort();
-
             StopApplication();
         }
 
         public static void StopApplication()
         {
-            //  Trying to kill ADB Server process 
             try
             {
                 foreach (var proc in Process.GetProcessesByName("adb"))
@@ -273,7 +270,6 @@ namespace FluidNGPermissionGranter
                     proc.Kill();
                 }
             }
-            //  If can't => just closing app
             catch
             {
                 Environment.Exit(0);

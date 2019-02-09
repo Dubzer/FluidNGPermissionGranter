@@ -37,7 +37,12 @@ namespace FluidNGPermissionGranter
             Process.Start("https://tgraph.io/Enable-developer-options-and-debugging-11-25");
         }
 
-        private void OtherButton_Click(object sender, RoutedEventArgs e)
+        private void OtherNewButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://tgraph.io/Enable-developer-options-and-debugging-11-24-2");
+        }
+
+        private void OtherOldButton_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("https://tgraph.io/Enable-developer-options-and-debugging-11-24"); 
         }

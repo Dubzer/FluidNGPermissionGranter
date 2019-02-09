@@ -14,11 +14,12 @@
 
             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                 <Label Content="Choose your device:" HorizontalContentAlignment="Center" FontSize="16"/>
-                <Button Content="Google Pixel (Oreo &amp; Pie)" FontSize="13" Height="28" Margin="3" Click="PixelButton_Click"/>
-                <Button Content="Samsung" FontSize="13" Height="28" Margin="3" Click="SamsungButton_Click"/>
-                <Button Content="Huawei" FontSize="13" Height="28" Margin="3" Click="HuaweiButton_Click"/>
-                <Button Content="Xiaomi" FontSize="13" Height="28" Margin="3" Click="XiaomiButton_Click"/>
-                <Button Content="Other (Nougat and older)" FontSize="13" Height="28" Margin="3" Click="OtherButton_Click"/>
+                <Button Content="Google Pixel" FontSize="13" Height="28" Margin="3" Click="PixelButton_Click" Background="#f5f5f5"/>
+                <Button Content="Samsung" FontSize="13" Height="28" Margin="3" Click="SamsungButton_Click" Background="#f5f5f5"/>
+                <Button Content="Huawei" FontSize="13" Height="28" Margin="3" Click="HuaweiButton_Click" Background="#f5f5f5"/>
+                <Button Content="Xiaomi" FontSize="13" Height="28" Margin="3" Click="XiaomiButton_Click" Background="#f5f5f5"/>
+                <Button Content="Other (Oreo &amp; Pie)" FontSize="13" Height="28" Margin="3" Click="OtherNewButton_Click" Background="#f5f5f5"/>
+                <Button Content="Other (Nougat and older)" FontSize="13" Height="28" Margin="3" Click="OtherOldButton_Click" Background="#f5f5f5"/>
             </StackPanel>
 
         </Grid>
