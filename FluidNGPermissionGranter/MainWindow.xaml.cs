@@ -98,6 +98,12 @@ namespace FluidNGPermissionGranter
             connectWindow = null;
         }
 
+        private void CloseAuthorizeWindow()
+        {
+            authorizeWindow.Close();
+            authorizeWindow = null;
+        }
+
         #endregion
 
         private void StartAdb()
@@ -191,8 +197,16 @@ namespace FluidNGPermissionGranter
             {
                 Thread.Sleep(300);
             }
-
-            phoneAuthorized();
+            if(AdbClient.Instance.GetDevices().Any())
+                phoneAuthorized();
+            else
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                {
+                    CloseAuthorizeWindow();
+                    OpenConnectWindow();
+                }));
+            }
         }
 
         private void AfterAuthorization()
