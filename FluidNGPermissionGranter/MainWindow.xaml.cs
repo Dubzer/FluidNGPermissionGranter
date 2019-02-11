@@ -271,10 +271,8 @@ namespace FluidNGPermissionGranter
         // Stopping ADB server after closing program
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            authorizationCheckThread.Abort();
             StopApplication();
         }
-
         public static void StopApplication()
         {
             try
