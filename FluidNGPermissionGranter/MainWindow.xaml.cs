@@ -145,6 +145,7 @@ namespace FluidNGPermissionGranter
         //  What happens after device connected
         private void OnDeviceConnected(object sender, DeviceDataEventArgs e)
         {
+            Thread.Sleep(500);  //  Giving time for thinking to device
             Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
                 if (connectWindow != null)
@@ -153,23 +154,17 @@ namespace FluidNGPermissionGranter
                 switch (AdbClient.Instance.GetDevices().First().State)
                 {
                     case DeviceState.Online:
-                        string output = "nothing";
                         try
                         {
-                            output = GrantPermission();
+                            GrantPermission();
                         }
-                        catch (Exception exception)
-                        {
-                            MessageBox.Show(exception.ToString() + "\n\n ADB said: \n " + output);
-                            throw;
-                        }
+                        catch { }
                         break;
                     case DeviceState.Unauthorized:
                         device = AdbClient.Instance.GetDevices().First();
-                        Debug.Print(device.GetType().ToString());
 
                         //Showing help window to authorize PC
-                        authorizeWindow = new AuthorizeWindow();
+                        authorizeWindow = new AuthorizeWindow() { Owner = Application.Current.MainWindow };
 
                         authorizeWindow.Show();
                         AdbClient.Instance.GetDevices();
@@ -213,27 +208,9 @@ namespace FluidNGPermissionGranter
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => { authorizeWindow.Close(); }));
 
-            string grantOutput = GrantPermission();
-
-            if (grantOutput == "success")
-            {
-                //  Showing "done" window 
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
-                {
-                    doneWindow = new DoneWindow { Title = "", Owner = Application.Current.MainWindow };
-                    doneWindow.ShowDialog();
-                }));
-            }
-            else
-            {
-                MessageBoxResult result = MessageBox.Show("Can`t send command by ADB. Please check your connection and try again. Also, try to redo the second step. Moreover, you can ask for help to the developer: \n \n" + grantOutput, "Error", MessageBoxButton.YesNo);
-                if (result == MessageBoxResult.Yes)
-                {
-                    Process.Start("https://dubzer.github.io");
-                }
-            }
-
+            GrantPermission();
             authorizeWindow.ContentRendered -= AuthorizeWindowContentRendered;
+
         }
 
         private static string SendToAdb(string command)
@@ -253,19 +230,42 @@ namespace FluidNGPermissionGranter
             }
         }
 
-        private string GrantPermission()
+        private void GrantPermission()
         {
+
             string output = SendToAdb("pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS");    //  Trying to grant permission 
             //  If output is *nothing*, then it means that there is no any errors, and we can show Successful window
             if (output == "")
             {
+                AfterGranting("success");
+            }
+
+        }
+
+        private void AfterGranting(string grantOutput)
+        {
+            if (grantOutput == "success")
+            {
+
+                monitor.DeviceConnected -= OnDeviceConnected;
+
                 //  Restarting Fluid Navigation Gestures app on device
                 SendToAdb("am force-stop com.fb.fluid");
                 SendToAdb("am start -n com.fb.fluid/com.fb.fluid.ActivityMain");
-                return "success";
+                //  Showing "done" window 
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                {
+                    doneWindow = new DoneWindow { Title = "", Owner = Application.Current.MainWindow };
+                    doneWindow.Show();
+                }));
+            }
+            else
+            {
+                MessageBoxResult result = MessageBox.Show("Can`t send command by ADB. Please check your connection and try again. Also, try to redo the second step. Moreover, you can ask for help to the developer: \n \n" + grantOutput, "Error", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                    Process.Start("https://dubzer.github.io");
             }
 
-            return output;
         }
 
         // Stopping ADB server after closing program
@@ -273,6 +273,7 @@ namespace FluidNGPermissionGranter
         {
             StopApplication();
         }
+        
         public static void StopApplication()
         {
             try
