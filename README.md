@@ -1,5 +1,5 @@
 # FluidNGPermissionGranter
-[Download last build](https://github.com/Dubzer/FluidNGPermissionGranter/releases/download/v3/FluidNGPermissionGranter.zip)
+[Download last build](https://github.com/Dubzer/FluidNGPermissionGranter/releases/download/v3.1/FluidNGPermissionGranter.zip)
 
 [All releases](https://github.com/Dubzer/FluidNGPermissionGranter/releases) 
 
@@ -18,7 +18,7 @@
  - Clone the repository
  - Open **FluidNGPermissionGranter.sln** in Visual Studio 2017+
  - Click **Run** on the top of VS window
- - Open folder where build stored and unpack [adb archive](https://raw.githubusercontent.com/Dubzer/FluidNGPermissionGranter/readme/adb.zip) in it. You will get this hierarchy:
+ - Open folder where build stored and unpack [adb archive](http://dubzer.github.io/fng/adb.zip) in it. You will get this hierarchy:
  
  ![alt text](https://raw.githubusercontent.com/Dubzer/FluidNGPermissionGranter/readme/screenshots/hierarchyBefore.png)
  - After that you can safely remove **.config** and **.pdb** files 
