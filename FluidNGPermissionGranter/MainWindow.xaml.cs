@@ -116,15 +116,9 @@ namespace FluidNGPermissionGranter
             catch
             {
                 MessageBox.Show(File.Exists(adbPath)
-                    ? "Can't start ADB server. Please, check Log and ask developer for it"
+                    ? "Can't start ADB server. Please, check log and ask developer for it"
                     : "Can't find ADB server EXE. Please, redownload app. ");
             }
-        }
-
-        private void CreateDeviceMonitor()
-        {
-            monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
-            monitor.DeviceConnected += OnDeviceConnected;
         }
 
         private void StartDeviceMonitor()
@@ -142,7 +136,12 @@ namespace FluidNGPermissionGranter
             }
         }
 
-        //  What happens after device connected
+        private void CreateDeviceMonitor()
+        {
+            monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
+            monitor.DeviceConnected += OnDeviceConnected;
+        }
+
         private void OnDeviceConnected(object sender, DeviceDataEventArgs e)
         {
             Thread.Sleep(500);  //  Giving time for thinking to device
@@ -158,12 +157,15 @@ namespace FluidNGPermissionGranter
                         {
                             GrantPermission();
                         }
-                        catch { }
+                        catch
+                        {
+                            // ignored
+                        }
                         break;
                     case DeviceState.Unauthorized:
                         device = AdbClient.Instance.GetDevices().First();
 
-                        //Showing help window to authorize PC
+                        //Showing help window to authorize server
                         authorizeWindow = new AuthorizeWindow() { Owner = Application.Current.MainWindow };
 
                         authorizeWindow.Show();
@@ -213,6 +215,18 @@ namespace FluidNGPermissionGranter
 
         }
 
+        private void GrantPermission()
+        {
+
+            string output = SendToAdb("pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS");    //  Trying to grant permission 
+            //  If output is *nothing*, then it means that there is no any errors, and we can show Successful window
+            if (output == "")
+            {
+                AfterGranting("success");
+            }
+
+        }
+
         private static string SendToAdb(string command)
         {
             //  Trying to send command to device via ADB
@@ -228,18 +242,6 @@ namespace FluidNGPermissionGranter
             {
                 return exception.ToString();
             }
-        }
-
-        private void GrantPermission()
-        {
-
-            string output = SendToAdb("pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS");    //  Trying to grant permission 
-            //  If output is *nothing*, then it means that there is no any errors, and we can show Successful window
-            if (output == "")
-            {
-                AfterGranting("success");
-            }
-
         }
 
         private void AfterGranting(string grantOutput)
@@ -288,6 +290,21 @@ namespace FluidNGPermissionGranter
                 Environment.Exit(0);
             }
             Environment.Exit(0);
+        }
+
+        //  will refactor later
+        private void RestoreAdb()
+        {
+            using (WebClient wc = new WebClient())
+            {
+                wc.DownloadFile(new Uri("https://dubzer.github.io/redirects/adb.html"),
+                    "adb.zip");
+            }
+        }
+
+        private void DebugButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            RestoreAdb();
         }
     }
 }
